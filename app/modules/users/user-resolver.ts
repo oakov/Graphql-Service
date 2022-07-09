@@ -1,29 +1,13 @@
-import {
-  Resolver,
-  Query,
-  Arg,
-  ID,
-  ArgsType,
-  Field,
-  Args,
-  Ctx,
-  Mutation,
-} from 'type-graphql';
+import { Resolver, Query, Arg, ID, Ctx, Mutation } from 'type-graphql';
 import { Context } from '../../context';
 
-import { IUser, JWT, User, UserInput } from './user-type';
-
-@ArgsType()
-class GetUsersArgs {
-  @Field((type) => ID)
-  id: string;
-}
+import { JWT, User, UserInput } from './user-type';
 
 @Resolver()
 export class UserResolver {
   @Query((returns) => User, { nullable: true })
   async user(
-    @Args() { id }: GetUsersArgs,
+    @Arg('id', (type) => ID) id: string,
     @Ctx() context: Context
   ): Promise<User | undefined> {
     return context.dataSources.userService.getUserById(id);
@@ -42,7 +26,7 @@ export class UserResolver {
   register(
     @Arg('user') newUser: UserInput,
     @Ctx() context: Context
-  ): Promise<IUser | undefined> {
+  ): Promise<User> {
     return context.dataSources.userService.register({ ...newUser });
   }
 }

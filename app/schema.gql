@@ -4,8 +4,18 @@
 # -----------------------------------------------
 
 type Query {
+  genre(id: ID!): Genre
+  genres(offset: Int, limit: Int): [Genre]
   user(id: ID!): User
   jwt(password: String!, email: String!): JWT
+}
+
+type Genre {
+  id: ID!
+  name: String
+  description: String
+  country: String
+  year: Int
 }
 
 type User {
@@ -21,7 +31,17 @@ type JWT {
 }
 
 type Mutation {
+  createGenre(genre: GenreInput!): Genre
+  updateGenre(genre: GenreInput!, id: ID!): Genre
+  deleteGenre(id: ID!): Genre
   register(user: UserInput!): User
+}
+
+input GenreInput {
+  name: String
+  description: String
+  country: String
+  year: Float
 }
 
 input UserInput {

@@ -1,5 +1,4 @@
 import { Field, ObjectType, ID, InputType } from 'type-graphql';
-import { UserService } from './user-service';
 
 export interface IUserInput {
   firstName: string;
