@@ -17,8 +17,10 @@ export class GenreData extends RESTDataSource {
 
     if (!data) {
       throw new Error('Genre not found');
+    } else {
+      data.id = data._id;
     }
-
+    console.log(data);
     return data;
   }
 

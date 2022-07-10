@@ -2,7 +2,7 @@ import { IGenre } from './genre';
 
 export const genreResolver = {
   Query: {
-    genre: async ({ id }, { dataSources }): Promise<IGenre> => {
+    genre: async (_, { id }, { dataSources }) => {
       const res = await dataSources.genreData.getGenreById(id);
       return res;
     },

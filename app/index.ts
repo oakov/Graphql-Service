@@ -7,8 +7,6 @@ const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
   const server = new ApolloServer({
-    // typeDefs,
-    // resolvers,
     schema,
     csrfPrevention: true,
     cache: 'bounded',
