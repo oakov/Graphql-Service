@@ -1,7 +1,8 @@
 import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
-import { IArtist, IArtistInput } from './artist-type';
+import { Deleted } from '../../context';
+import { IArtist, IArtistInput } from './artist';
 
-export class ArtistService extends RESTDataSource {
+export class ArtistData extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = process.env.ARTISTS_URL;
@@ -47,16 +48,15 @@ export class ArtistService extends RESTDataSource {
 
   async createArtist(artist: IArtistInput): Promise<IArtist> {
     const data = await this.post('', artist);
-    if (data) data.id = data._id;
 
-    // if (data.instruments && Array.isArray(data.instruments)) {
-    //   data.instruments = data.instruments.join(', ');
-    // }
-    // console.log(data);
+    if (data.instruments && Array.isArray(data.instruments)) {
+      data.instruments = data.instruments.join(', ');
+    }
+
     return data;
   }
 
-  async updateArtist(id: string, artist: IArtist): Promise<IArtist> {
+  async updateArtist(id: string, artist: IArtistInput): Promise<IArtist> {
     const data = await this.put(`/${encodeURIComponent(id)}`, artist);
 
     if (data.instruments && Array.isArray(data.instruments)) {
@@ -66,7 +66,7 @@ export class ArtistService extends RESTDataSource {
     return data;
   }
 
-  async deleteArtist(id: string): Promise<any> {
+  async deleteArtist(id: string): Promise<Deleted> {
     const data = await this.delete(`/${encodeURIComponent(id)}`);
     return data;
   }

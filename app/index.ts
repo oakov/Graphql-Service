@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server';
-import { auth, dataSources, resolvers, schema, typeDefs } from './context';
+import { auth, dataSources, schema } from './context';
 import 'dotenv/config';
 
 const PORT = process.env.PORT || 4000;

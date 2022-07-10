@@ -1,9 +1,8 @@
 import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
-import { request } from 'https';
-import { auth } from '../../context';
-import { IBand, IBandInput } from './band-type';
+import { Deleted } from '../../context';
+import { IBand, IBandInput } from './band';
 
-export class BandService extends RESTDataSource {
+export class BandData extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = process.env.BANDS_URL;
@@ -13,13 +12,13 @@ export class BandService extends RESTDataSource {
     request.headers.set('Authorization', `Bearer ${this.context.token}`);
   }
 
-  async getBandById(id: string): Promise<IBand> {
+  async getBandById(id: string): Promise<IBandInput> {
     const data = await this.get(`/${encodeURIComponent(id)}`);
+
     if (!data) {
       throw new Error('Band not found');
-    } else {
-      data.id = data._id;
     }
+
     return data;
   }
 
@@ -36,16 +35,15 @@ export class BandService extends RESTDataSource {
 
   async createBand(band: IBandInput): Promise<IBand> {
     const data = await this.post('', band);
-    if (data) data.id = data._id;
     return data;
   }
 
-  async updateBand(id: string, band: IBand): Promise<IBand> {
+  async updateBand(id, band: IBandInput): Promise<IBand> {
     const data = await this.put(`/${encodeURIComponent(id)}`, band);
     return data;
   }
 
-  async deleteBand(id: string): Promise<any> {
+  async deleteBand(id: string): Promise<Deleted> {
     const data = await this.delete(`/${encodeURIComponent(id)}`);
     return data;
   }

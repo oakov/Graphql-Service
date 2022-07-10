@@ -1,62 +1,58 @@
-import {
-  Arg,
-  Ctx,
-  FieldResolver,
-  ID,
-  Int,
-  Mutation,
-  Query,
-  Resolver,
-  Root,
-} from 'type-graphql';
-import { Context } from '../../context';
-import { Genre } from '../genres/genre-type';
-import { Band, BandInput } from './band-type';
+import { IArtist } from '../artists/artist';
+import { IMember } from './band';
 
-@Resolver((of) => Band)
-export class BandResolver {
-  @Query((returns) => Band, { nullable: true })
-  async band(
-    @Arg('id', (type) => ID) id: string,
-    @Ctx() context: Context
-  ): Promise<Band | undefined> {
-    return context.dataSources.bandService.getBandById(id);
-  }
+export const bandResolver = {
+  Query: {
+    band: async (_, { id }, { dataSources }) => {
+      const res = await dataSources.bandData.getBandById(id);
+      return res;
+    },
+    bands: async (_, { limit, offset }, { dataSources }) => {
+      const res = await dataSources.bandData.getAllBands(limit, offset);
+      return res;
+    },
+  },
+  Mutation: {
+    createBand: async (_, { band }, { dataSources }) => {
+      const newBand = { ...band };
+      const res = await dataSources.bandData.createBand(newBand);
+      return res;
+    },
+    updateBand: async (_, { id, band }, { dataSources }) => {
+      const newBand = { ...band };
+      const res = await dataSources.bandData.updateBand(id, newBand);
+      return res;
+    },
+    deleteBand: async (_, { id }, { dataSources }) => {
+      const res = await dataSources.bandData.deleteBand(id);
+      return res;
+    },
+  },
+  Band: {
+    id: (parent) => parent._id,
+    genres: async ({ genresIds }, _, { dataSources }) => {
+      const res = await Promise.all(
+        genresIds.map((genreId) =>
+          dataSources.genreService.getGenreById(genreId)
+        )
+      );
+      return res;
+    },
+    members: async ({ members }, _, { dataSources }) => {
+      const res: IArtist[] = await Promise.all(
+        members.map((member: IMember) =>
+          dataSources.artistData.getArtistById(member._id)
+        )
+      );
 
-  @Query((returns) => [Band], { nullable: 'itemsAndList' })
-  async bands(
-    @Arg('limit', (type) => Int, { nullable: true }) limit: number,
-    @Arg('offset', (type) => Int, { nullable: true }) offset: number,
-    @Ctx() context: Context
-  ): Promise<Band[] | undefined> {
-    return context.dataSources.bandService.getAllBands(limit, offset);
-  }
-
-  @Mutation((returns) => Band)
-  createBand(
-    @Arg('band') newBand: BandInput,
-    // @Arg('name') name: string,
-    // @Arg('origin') origin: string,
-    // @Arg('website') website: string,
-    // @Arg('genresIds') genresIds: string[],
-    @Ctx() context: Context
-  ): Promise<Band> {
-    return context.dataSources.bandService.createBand({
-      ...newBand,
-      // name,
-      // origin,
-      // website,
-      // genresIds,
-    });
-  }
-
-  @FieldResolver()
-  async genres(@Root() band: Band, @Ctx() context: Context) {
-    const res = await Promise.all(
-      band.genresIds.map((genreId) =>
-        context.dataSources.genreData.getGenreById(genreId)
-      )
-    );
-    return res;
-  }
-}
+      return res.map((artist: IArtist, idx: number) => ({
+        id: artist.id,
+        artist: `${artist.firstName} ${
+          artist.middleName ? artist.middleName : ''
+        } ${artist.secondName}`,
+        instrument: members[idx].instrument,
+        years: members[idx].years,
+      }));
+    },
+  },
+};
