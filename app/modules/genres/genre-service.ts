@@ -1,7 +1,8 @@
 import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
-import { IGenre, IGenreInput } from './genre-type';
+import { Deleted } from '../../context';
+import { IGenre, IGenreInput } from './genre';
 
-export class GenreService extends RESTDataSource {
+export class GenreData extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = process.env.GENRES_URL;
@@ -16,9 +17,8 @@ export class GenreService extends RESTDataSource {
 
     if (!data) {
       throw new Error('Genre not found');
-    } else {
-      data.id = data._id;
     }
+
     return data;
   }
 
@@ -38,18 +38,13 @@ export class GenreService extends RESTDataSource {
     return data;
   }
 
-  async deleteGenre(id: string): Promise<any> {
+  async deleteGenre(id: string): Promise<Deleted> {
     const data = await this.delete(`/${encodeURIComponent(id)}`);
     return data;
   }
 
   async updateGenre(id: string, genre: IGenreInput): Promise<IGenre> {
     const data = await this.put(`/${encodeURIComponent(id)}`, genre);
-    if (!data) {
-      throw new Error('Genre not found');
-    } else {
-      data.id = data._id;
-    }
     return data;
   }
 }

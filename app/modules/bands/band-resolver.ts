@@ -54,7 +54,7 @@ export class BandResolver {
   async genres(@Root() band: Band, @Ctx() context: Context) {
     const res = await Promise.all(
       band.genresIds.map((genreId) =>
-        context.dataSources.genreService.getGenreById(genreId)
+        context.dataSources.genreData.getGenreById(genreId)
       )
     );
     return res;

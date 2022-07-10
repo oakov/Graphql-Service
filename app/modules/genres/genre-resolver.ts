@@ -1,48 +1,37 @@
-import { Arg, Ctx, ID, Int, Mutation, Query, Resolver } from 'type-graphql';
-import { Context } from '../../context';
-import { Genre, GenreInput } from './genre-type';
+import { IGenre } from './genre';
 
-@Resolver()
-export class GenreResolver {
-  @Query((returns) => Genre, { nullable: true })
-  async genre(
-    @Arg('id', (type) => ID) id: string,
-    @Ctx() context: Context
-  ): Promise<Genre | undefined> {
-    return context.dataSources.genreService.getGenreById(id);
-  }
-
-  @Query((returns) => [Genre], { nullable: 'itemsAndList' })
-  async genres(
-    @Arg('limit', (type) => Int, { nullable: true }) limit: number,
-    @Arg('offset', (type) => Int, { nullable: true }) offset: number,
-    @Ctx() context: Context
-  ): Promise<Genre[] | undefined> {
-    return context.dataSources.genreService.getAllGenres(limit, offset);
-  }
-
-  @Mutation((returns) => Genre, { nullable: true })
-  createGenre(
-    @Arg('genre') newGenre: GenreInput,
-    @Ctx() context: Context
-  ): Promise<Genre> {
-    return context.dataSources.genreService.createGenre({ ...newGenre });
-  }
-
-  @Mutation((returns) => Genre, { nullable: true })
-  updateGenre(
-    @Arg('id', (type) => ID) id: string,
-    @Arg('genre') newGenre: GenreInput,
-    @Ctx() context: Context
-  ): Promise<Genre> {
-    return context.dataSources.genreService.updateGenre(id, { ...newGenre });
-  }
-
-  @Mutation((returns) => Genre, { nullable: true })
-  deleteGenre(
-    @Arg('id', (type) => ID) id: string,
-    @Ctx() context: Context
-  ): Promise<Genre> {
-    return context.dataSources.genreService.deleteGenre(id);
-  }
-}
+export const genreResolver = {
+  Query: {
+    genre: async ({ id }, { dataSources }): Promise<IGenre> => {
+      const res = await dataSources.genreData.getGenreById(id);
+      return res;
+    },
+    genres: async (
+      _,
+      { limit, offset },
+      { dataSources }
+    ): Promise<IGenre[]> => {
+      const res = await dataSources.genreData.getAllGenres(limit, offset);
+      return res;
+    },
+  },
+  Mutation: {
+    createGenre: async (_, { genre }, { dataSources }) => {
+      const newGenre = { ...genre };
+      const res = await dataSources.genreData.createGenre(newGenre);
+      return res;
+    },
+    updateGenre: async (_, { id, genre }, { dataSources }) => {
+      const newGenre = { ...genre };
+      const res = await dataSources.genreData.updateGenre(id, newGenre);
+      return res;
+    },
+    deleteGenre: async (_, { id }, { dataSources }) => {
+      const res = await dataSources.genreData.deleteGenre(id);
+      return res;
+    },
+  },
+  Genre: {
+    id: (parent) => parent._id,
+  },
+};
