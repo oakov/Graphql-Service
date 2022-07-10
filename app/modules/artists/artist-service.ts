@@ -45,13 +45,14 @@ export class ArtistService extends RESTDataSource {
     return data.items;
   }
 
-  async createArtist(artist: IArtist): Promise<IArtist> {
+  async createArtist(artist: IArtistInput): Promise<IArtist> {
     const data = await this.post('', artist);
+    if (data) data.id = data._id;
 
-    if (data.instruments && Array.isArray(data.instruments)) {
-      data.instruments = data.instruments.join(', ');
-    }
-
+    // if (data.instruments && Array.isArray(data.instruments)) {
+    //   data.instruments = data.instruments.join(', ');
+    // }
+    // console.log(data);
     return data;
   }
 

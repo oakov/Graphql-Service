@@ -1,6 +1,7 @@
 import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
 import path from 'path';
 import { buildSchema } from 'type-graphql';
+import { ArtistResolver } from './modules/artists/artist-resolver';
 import { ArtistService } from './modules/artists/artist-service';
 import { BandResolver } from './modules/bands/band-resolver';
 import { BandService } from './modules/bands/band-service';
@@ -14,12 +15,13 @@ export interface Context {
     userService: UserService;
     genreService: GenreService;
     bandService: BandService;
+    artistService: ArtistService;
   };
 }
 
 export const schemaGQL = Promise.resolve(
   buildSchema({
-    resolvers: [UserResolver, GenreResolver, BandResolver],
+    resolvers: [UserResolver, GenreResolver, BandResolver, ArtistResolver],
     emitSchemaFile: {
       path: __dirname + '/schema.gql',
       commentDescriptions: true,

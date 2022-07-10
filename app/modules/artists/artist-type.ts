@@ -45,7 +45,7 @@ export class Artist implements IArtist {
   @Field((type) => [Band], { nullable: 'itemsAndList' })
   bands: Band[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: 'itemsAndList' })
   instruments: string[];
 }
 
@@ -72,6 +72,6 @@ export class ArtistInput implements IArtistInput {
   @Field((type) => [ID], { nullable: 'itemsAndList' })
   bandsIds: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: 'itemsAndList' })
   instruments: string[];
 }

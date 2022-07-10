@@ -21,20 +21,20 @@ export interface IMember {
   years: string[];
 }
 
-// @ObjectType()
-// export class Member implements IMember {
-//   @Field((type) => ID)
-//   id: string;
+@ObjectType()
+export class Member implements IMember {
+  @Field((type) => ID)
+  id: string;
 
-//   @Field({ nullable: true })
-//   artist: string;
+  @Field({ nullable: true })
+  artist: string;
 
-//   @Field({ nullable: true })
-//   instrument: string;
+  @Field({ nullable: true })
+  instrument: string;
 
-//   @Field({ nullable: 'itemsAndList' })
-//   years: string[];
-// }
+  @Field((type) => [String], { nullable: 'itemsAndList' })
+  years: string[];
+}
 
 @ObjectType()
 export class Band implements IBand {
