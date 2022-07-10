@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server';
 import { auth, dataSources, schema } from './context';
 import 'dotenv/config';
