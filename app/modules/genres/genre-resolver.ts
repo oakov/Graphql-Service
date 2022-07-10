@@ -14,7 +14,7 @@ export class GenreResolver {
 
   @Query((returns) => [Genre], { nullable: 'itemsAndList' })
   async genres(
-    @Arg('limit', (type) => Int, { nullable: true }) limit,
+    @Arg('limit', (type) => Int, { nullable: true }) limit: number,
     @Arg('offset', (type) => Int, { nullable: true }) offset: number,
     @Ctx() context: Context
   ): Promise<Genre[] | undefined> {

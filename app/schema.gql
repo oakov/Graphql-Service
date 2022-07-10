@@ -4,10 +4,20 @@
 # -----------------------------------------------
 
 type Query {
+  band(id: ID!): Band
+  bands(offset: Int, limit: Int): [Band]
   genre(id: ID!): Genre
   genres(offset: Int, limit: Int): [Genre]
   user(id: ID!): User
   jwt(password: String!, email: String!): JWT
+}
+
+type Band {
+  id: ID!
+  name: String
+  origin: String
+  website: String
+  genres: [Genre]
 }
 
 type Genre {
@@ -31,10 +41,18 @@ type JWT {
 }
 
 type Mutation {
+  createBand(band: BandInput!): Band!
   createGenre(genre: GenreInput!): Genre
   updateGenre(genre: GenreInput!, id: ID!): Genre
   deleteGenre(id: ID!): Genre
   register(user: UserInput!): User
+}
+
+input BandInput {
+  name: String
+  origin: String
+  website: String
+  genresIds: [ID]
 }
 
 input GenreInput {

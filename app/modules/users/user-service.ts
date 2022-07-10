@@ -1,4 +1,5 @@
 import { RESTDataSource } from 'apollo-datasource-rest';
+import { auth } from '../../context';
 import { IUser, IUserInput } from './user-type';
 
 export class UserService extends RESTDataSource {
@@ -18,6 +19,7 @@ export class UserService extends RESTDataSource {
   async login(email: string, password: string): Promise<{ jwt: string }> {
     const data = await this.post('/login', { email, password });
     this.context.token = data.jwt;
+    auth.token = data.jwt;
     return data;
   }
 
